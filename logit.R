@@ -1,0 +1,27 @@
+options(prompt="SAUMYA>>")
+data=read.csv("C://Users//hp 15 bs540TU//Downloads//diabetes detection//diabetes.csv")
+library(caTools)
+split=sample.split(data,SplitRatio=0.8)
+split
+training=subset(data,split==TRUE)
+testing=subset(data,split==FALSE)
+training
+testing
+model=glm(Outcome~.,training,family="binomial")
+summary(model)
+model=glm(Outcome~.-SkinThickness,training,family="binomial")
+summary(model)
+model=glm(Outcome~.-Age,training,family="binomial")
+summary(model)
+model=glm(Outcome~.-Insulin,training,family="binomial")
+summary(model)
+testing
+res=predict(model,testing,"response")
+res
+table(actualvalue=testing$Outcome,predictedvalue=res>0.5)
+(93+29)/(90+29+20+28)
+library(ROCR)
+res=predict(model,training,"response")
+rocrpred=prediction(res,training$Outcome)
+rocrperf=performance(rocrpred,"tpr","fpr")
+plot(rocrperf,colorize=TRUE,print.cutoffs.at=seq(0.1,by=0.1))
